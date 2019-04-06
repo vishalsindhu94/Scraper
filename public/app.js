@@ -10,7 +10,7 @@ $(document).on("click", ".scrape", function () {
 });
 
 
-// PUT request to server route /save/articleId
+
 $(document).on("click", ".save", function () {
 
   $.ajax({
@@ -18,14 +18,14 @@ $(document).on("click", ".save", function () {
     url: "/save/" + $(this).attr("attrId")
 
   }).then(function (data) {
-    // Log the response
+    
     console.log(data);
 
   });
   location.reload();
 });
 
-// PUT request to server route /delsave/articleId
+
 $(document).on("click", ".delete", function () {
 
   $.ajax({
@@ -33,14 +33,14 @@ $(document).on("click", ".delete", function () {
     url: "/delete/" + $(this).attr("attrId")
 
   }).then(function (data) {
-    // Log the response
+    
     console.log(data);
   });
 
   location.reload();
 });
 
-// Populate data and show modal with existing notes and form for new note
+
 $(document).on("click", ".addNote", function () {
   event.preventDefault();
   var articleId = $(this).attr("attrId")
@@ -70,23 +70,22 @@ $(document).on("click", ".addNote", function () {
     });
 });
 
-// POST request to server route /articles/articleId
-// body of request contains title and body of note
+
 $(document).on("click", ".saveNote", function () {
 
   $.ajax({
     method: "POST",
     url: "/articles/" + $(this).attr("articleId"),
     data: {
-      // Value taken from title input
+     
       title: $("#title").val(),
-      // Value taken from note textarea
+      
       body: $("#body").val()
     }
 
   }).then(function (data) {
 
-    // Log the response
+    
     console.log(data);
     $("#title").val("");
     $("#body").val("");
@@ -95,7 +94,7 @@ $(document).on("click", ".saveNote", function () {
   });
 });
 
-// POST request to server route /delarticles/articleId
+
 
 $(document).on("click", ".delnotebutton", function () {
 
@@ -103,7 +102,7 @@ $(document).on("click", ".delnotebutton", function () {
     method: "POST",
     url: "/deleteArticles/" + $(this).attr("articleId") + "/" + $(this).attr("attrId")
   }).then(function (data) {
-    // Log the response
+    
     console.log(data);
     $("#myModal").modal("toggle");
 

@@ -100,22 +100,6 @@ app.get("/scrape", function (req, res) {
   });
 });
 
-
-
-
-app.get("/articles", function (req, res) {
-  
-  db.Article.find({})
-    .then(function (dbArticle) {
-      
-      res.json(dbArticle);
-    })
-    .catch(function (err) {
-      
-      res.json(err);
-    });
-});
-
 app.get("/saved", function (req, res) {
   
   db.Article.find({ saved: true })

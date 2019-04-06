@@ -12,7 +12,7 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
@@ -27,32 +27,47 @@ app.use(express.json());
 // Make public a static folder
 app.use(express.static("public"));
 
+var exphbs = require("express-handlebars");
+
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+
 // Connect to the Mongo DB
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI,{ useNewUrlParser: true });
+
 
 // Routes
 
 // A GET route for scraping the echoJS website
 app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with axios
-  axios.get("http://www.echojs.com/").then(function(response) {
+  axios.get("https://www.nytimes.com/").then(function(response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
 
     // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function(i, element) {
-      // Save an empty result object
-      var result = {};
+    console.log($("article.item").length)
 
-      // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this)
-        .children("a")
-        .text();
-      result.link = $(this)
-        .children("a")
-        .attr("href");
+      $("article").each(function(i, element) {
+
+        // Save an empty result object
+        var result = {};
+  
+        // Add the title and summary of every link, and save them as properties of the result object
+  
+        summary = ""
+        if ($(this).find("ul").length) {
+          summary = $(this).find("li").first().text();
+        } else {
+          summary = $(this).find("p").text();
+        };
+  
+        result.title = $(this).find("h2").text();
+        result.summary = summary;
+        result.link = "https://www.nytimes.com" + $(this).find("a").attr("href");
 
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)

@@ -1,6 +1,7 @@
 var express = require("express");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var viewsRoutesDir = require("./routes");
 
 
 
@@ -34,7 +35,7 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines
 
 mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
-
+app.use(viewsRoutesDir);
 
 
 app.get("/", function (req, res) {
@@ -43,7 +44,7 @@ app.get("/", function (req, res) {
     .then(function (dbArticle) {
       
       var hbsObject = {
-        articles: dbArticle
+        article: dbArticle
       };
 
       res.render("index", hbsObject);
@@ -106,7 +107,7 @@ app.get("/saved", function (req, res) {
     .then(function (dbArticle) {
       
       var hbsObject = {
-        articles: dbArticle
+        article: dbArticle
       };
 
       res.render("saved", hbsObject);
@@ -186,7 +187,6 @@ app.put("/delete/:id", function (req, res) {
         res.json(err);
       });
   });
-
 
   
   app.listen(PORT, function () {
